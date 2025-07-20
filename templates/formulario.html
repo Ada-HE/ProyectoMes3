@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Predicción de Estado de Cita</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: url("https://i.pinimg.com/originals/bd/56/5d/bd565dcc0a556add0b0a0ed6b26d686e.gif") no-repeat center center/cover;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(2px);
+      z-index: 1;
+    }
+
+    .container {
+      z-index: 2;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 25px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 0 20px #ff66cc;
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    h1 {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 18px;
+      text-align: center;
+      color: #ff66cc;
+      text-shadow: 0 0 5px #fff;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #333;
+      font-size: 12px;
+    }
+
+    input[type="text"], input[type="number"], select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 2px solid #ff99cc;
+      background: rgba(255, 240, 250, 0.8);
+      font-size: 13px;
+      margin-bottom: 15px;
+      transition: 0.3s;
+    }
+
+    input[type="text"]:focus, input[type="number"]:focus, select:focus {
+      border-color: #ff66cc;
+      box-shadow: 0 0 8px #ff99cc;
+      outline: none;
+    }
+
+    input[type="submit"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 15px;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(to right, #ff66cc, #cc00ff);
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 0 8px #ff66cc;
+      transition: 0.3s ease;
+    }
+
+    input[type="submit"]:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #ff99cc;
+    }
+
+    #resultado {
+      margin-top: 15px;
+      font-weight: bold;
+      text-align: center;
+      color: #cc00ff;
+    }
+
+    .raindrop {
+      position: absolute;
+      width: 7px;
+      height: 25px;
+      background: rgba(173, 216, 230, 0.6);
+      top: -20px;
+      animation: fall linear infinite;
+      z-index: 3;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh);
+        opacity: 0;
+      }
+    }
+  </style>
+  <script>
+    function predecirEstadoCita(event) {
+      event.preventDefault();
+      const datos = [
+        "edad", "citas_totales", "citas_asistidas", "estado_tratamiento", 
+        "monto_ultimo_pago", "dias_entre_citas"
+      ].map(id => `${id}=${encodeURIComponent(document.getElementById(id).value)}`).join("&");
+
+      fetch("/predict", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: datos
+      })
+      .then(res => res.json())
+      .then(data => {
+        const res = document.getElementById("resultado");
+        res.textContent = data.error ? "Error: " + data.error : "Estado de Cita Predicho: " + data.estado_cita;
+      })
+      .catch(err => {
+        document.getElementById("resultado").textContent = "Error en la solicitud.";
+        console.error("Error:", err);
+      });
+    }
+
+    function crearGota() {
+      const gota = document.createElement("div");
+      gota.className = "raindrop";
+      gota.style.left = Math.random() * 100 + "vw";
+      gota.style.animationDuration = (Math.random() * 2 + 2) + "s";
+      gota.style.opacity = Math.random() * 0.5 + 0.2;
+      document.body.appendChild(gota);
+      setTimeout(() => gota.remove(), 4000);
+    }
+
+    setInterval(crearGota, 100);
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>Predicción de Estado de Cita</h1>
+    <form onsubmit="predecirEstadoCita(event)">
+      <label for="edad">Edad</label>
+      <input type="number" id="edad" required />
+
+      <label for="citas_totales">Citas Totales</label>
+      <input type="number" id="citas_totales" required />
+
+      <label for="citas_asistidas">Citas Asistidas</label>
+      <input type="number" id="citas_asistidas" required />
+
+      <label for="estado_tratamiento">Estado del Tratamiento</label>
+      <select id="estado_tratamiento" required>
+        <option value="Inicial">en progreso</option>
+        <option value="En curso">terminado</option>
+        <option value="Finalizado">pendiente</option>
+      </select>
+
+      <label for="monto_ultimo_pago">Monto Último Pago</label>
+      <input type="number" step="0.01" id="monto_ultimo_pago" required />
+
+      <label for="dias_entre_citas">Días Entre Citas</label>
+      <input type="number" id="dias_entre_citas" required />
+
+      <input type="submit" value="Predecir" />
+    </form>
+    <div id="resultado"></div>
+  </div>
+</body>
+</html>
