@@ -4,13 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Predicción de Estado de Cita</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
       padding: 0;
       font-family: 'Poppins', sans-serif;
-      background: url("https://i.pinimg.com/originals/bd/56/5d/bd565dcc0a556add0b0a0ed6b26d686e.gif") no-repeat center center/cover;
+      background: linear-gradient(to bottom right, #0f3057, #33b7a0); /* azul jade más suave */
       height: 100vh;
       overflow: hidden;
       display: flex;
@@ -23,19 +23,19 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(2px);
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(1.5px);
       z-index: 1;
     }
 
     .container {
       z-index: 2;
       background: rgba(255, 255, 255, 0.95);
-      padding: 25px;
+      padding: 30px;
       border-radius: 20px;
       width: 90%;
       max-width: 400px;
-      box-shadow: 0 0 20px #ff66cc;
+      box-shadow: 0 8px 20px rgba(0, 100, 100, 0.3);
       animation: fadeIn 1s ease;
     }
 
@@ -45,11 +45,9 @@
     }
 
     h1 {
-      font-family: 'Press Start 2P', cursive;
-      font-size: 18px;
+      font-size: 20px;
       text-align: center;
-      color: #ff66cc;
-      text-shadow: 0 0 5px #fff;
+      color: #006d77;
       margin-bottom: 20px;
     }
 
@@ -57,24 +55,28 @@
       display: block;
       margin-bottom: 6px;
       font-weight: 600;
-      color: #333;
-      font-size: 12px;
+      color: #005f5f;
+      font-size: 13px;
     }
 
-    input[type="text"], input[type="number"], select {
+    input[type="text"],
+    input[type="number"],
+    select {
       width: 100%;
       padding: 10px;
-      border-radius: 10px;
-      border: 2px solid #ff99cc;
-      background: rgba(255, 240, 250, 0.8);
-      font-size: 13px;
+      border-radius: 8px;
+      border: 2px solid #00b3b3;
+      background: rgba(240, 255, 255, 0.85);
+      font-size: 14px;
       margin-bottom: 15px;
       transition: 0.3s;
     }
 
-    input[type="text"]:focus, input[type="number"]:focus, select:focus {
-      border-color: #ff66cc;
-      box-shadow: 0 0 8px #ff99cc;
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    select:focus {
+      border-color: #009999;
+      box-shadow: 0 0 8px #66ffff;
       outline: none;
     }
 
@@ -85,38 +87,45 @@
       font-weight: bold;
       border: none;
       border-radius: 10px;
-      background: linear-gradient(to right, #ff66cc, #cc00ff);
+      background: linear-gradient(to right, #11999e, #0f6466);
       color: white;
       cursor: pointer;
-      box-shadow: 0 0 8px #ff66cc;
+      box-shadow: 0 0 10px rgba(0, 128, 128, 0.5);
       transition: 0.3s ease;
     }
 
     input[type="submit"]:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 15px #ff99cc;
+      box-shadow: 0 0 15px #00ffff;
     }
 
     #resultado {
       margin-top: 15px;
       font-weight: bold;
       text-align: center;
-      color: #cc00ff;
+      color: #004c4c;
     }
 
-    .raindrop {
+    .bubble {
       position: absolute;
-      width: 7px;
-      height: 25px;
-      background: rgba(173, 216, 230, 0.6);
-      top: -20px;
-      animation: fall linear infinite;
-      z-index: 3;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      animation: rise 12s linear infinite;
+      z-index: 0;
     }
 
-    @keyframes fall {
-      to {
-        transform: translateY(110vh);
+    @keyframes rise {
+      0% {
+        bottom: -100px;
+        transform: translateX(0);
+        opacity: 0;
+      }
+      50% {
+        opacity: 0.8;
+      }
+      100% {
+        bottom: 110vh;
+        transform: translateX(30px);
         opacity: 0;
       }
     }
@@ -147,17 +156,18 @@
       });
     }
 
-    function crearGota() {
-      const gota = document.createElement("div");
-      gota.className = "raindrop";
-      gota.style.left = Math.random() * 100 + "vw";
-      gota.style.animationDuration = (Math.random() * 2 + 2) + "s";
-      gota.style.opacity = Math.random() * 0.5 + 0.2;
-      document.body.appendChild(gota);
-      setTimeout(() => gota.remove(), 4000);
+    function crearBurbuja() {
+      const burbuja = document.createElement("div");
+      const size = Math.random() * 15 + 20; // Burbujas entre 20 y 35 px
+      burbuja.className = "bubble";
+      burbuja.style.width = burbuja.style.height = size + "px";
+      burbuja.style.left = Math.random() * 100 + "vw";
+      burbuja.style.animationDuration = (Math.random() * 5 + 6) + "s";
+      document.body.appendChild(burbuja);
+      setTimeout(() => burbuja.remove(), 15000);
     }
 
-    setInterval(crearGota, 100);
+    setInterval(crearBurbuja, 250);
   </script>
 </head>
 <body>
@@ -175,8 +185,8 @@
 
       <label for="estado_tratamiento">Estado del Tratamiento</label>
       <select id="estado_tratamiento" required>
-        <option value="terminado">terminado</option>
-        <option value="cancelado">cancelado</option>
+        <option value="terminado">Terminado</option>
+        <option value="cancelado">Cancelado</option>
       </select>
 
       <label for="monto_ultimo_pago">Monto Último Pago</label>

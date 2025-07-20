@@ -14,7 +14,7 @@ model = joblib.load("random_forest_model.pkl")  # Modelo de Random Forest
 scaler = joblib.load("scaler.pkl")  # Scaler usado para escalar las variables
 label_encoder = joblib.load("label_encoder_estado_cita.pkl")  # LabelEncoder para estado_cita
 ordinal_encoder = joblib.load("ordinal_encoder.pkl")  # OrdinalEncoder para estado_tratamiento
-selected_features = joblib.load("selected_features.pkl")  # Características seleccionadas ##CREO QUE ESTE LO ELIMINAREMOS
+selected_features = joblib.load("selected_features.pkl")  # Características seleccionadas
 
 app.logger.debug("Modelo, scaler, label encoder y ordinal encoder cargados correctamente.")
 app.logger.debug(f"Ordinal encoder categories: {ordinal_encoder.categories_}")
@@ -32,7 +32,7 @@ def predict():
         edad = float(request.form['edad'])
         citas_totales = float(request.form['citas_totales'])
         citas_asistidas = float(request.form['citas_asistidas'])
-        estado_tratamiento = request.form['estado_tratamiento'].title() 
+        estado_tratamiento = request.form['estado_tratamiento']  # Mantener en minúsculas
         monto_ultimo_pago = float(request.form['monto_ultimo_pago'])
         dias_entre_citas = float(request.form['dias_entre_citas'])
 
